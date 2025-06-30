@@ -23,7 +23,7 @@ import { useForm } from "react-hook-form";
 export function AddTaskModal() {
   const form = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: object) => {
     console.log(data);
   };
 
