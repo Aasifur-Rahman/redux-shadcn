@@ -3,7 +3,7 @@ import type { ITask } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface IState {
-  tasks: [ITask];
+  tasks: [ITask, ITask];
   filter: "all" | "high" | "medium" | "low";
 }
 
@@ -12,11 +12,19 @@ const initialState: IState = {
   tasks: [
     {
       id: "afgadfasdf",
-      title: "Init",
+      title: "Init frontend",
       description: "create home page , and routing",
       dueDate: "2025-11",
       isCompleted: false,
       priority: "High",
+    },
+    {
+      id: "afgadfasdffdfsd",
+      title: "Init github",
+      description: "create stage and testing branching",
+      dueDate: "2025-11",
+      isCompleted: false,
+      priority: "Medium",
     },
   ],
   filter: "all",
