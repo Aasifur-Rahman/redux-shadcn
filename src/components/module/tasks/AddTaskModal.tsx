@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+
 import {
   Dialog,
   DialogClose,
@@ -32,15 +33,22 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { addTask } from "@/redux/feature/taskSlice/taskSlice";
+import { useAppDispatch } from "@/redux/hook";
+import type { ITask } from "@/types";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 
 export function AddTaskModal() {
   const form = useForm();
 
-  const onSubmit = (data: object) => {
-    console.log(data);
+  // calling for actions to perform
+  const dispatch = useAppDispatch();
+
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    // the action will be performed here
+    dispatch(addTask(data as ITask));
   };
 
   return (
