@@ -33,26 +33,36 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { addTask } from "@/redux/feature/taskSlice/taskSlice";
-import { useAppDispatch } from "@/redux/hook";
-import type { ITask } from "@/types";
+import { useCreateTaskMutation } from "@/redux/api/baseApi";
+
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 
 export function AddTaskModal() {
+  const [open, setOpen] = useState(false);
   const form = useForm();
 
-  // calling for actions to perform
-  const dispatch = useAppDispatch();
+  // when we do mutation it will return array
+  const [createTask, { data }] = useCreateTaskMutation();
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  console.log("Data", data);
+  // calling for actions to perform
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     // the action will be performed here
-    dispatch(addTask(data as ITask));
+    const taskData = {
+      ...data,
+      isCompleted: false,
+    };
+
+    const res = await createTask(taskData).unwrap();
+    console.log("Inside submit function ", res);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Add Task</Button>
       </DialogTrigger>
@@ -96,6 +106,30 @@ export function AddTaskModal() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="mt-5">Priority</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Set priority" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="low">Low</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="high">High</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="assignTo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="mt-5">Assign To</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}

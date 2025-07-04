@@ -21,13 +21,16 @@ export default function TaskCard({ task }: IProps) {
               "bg-red-500": task.priority === "high",
             })}
           ></div>
-          <h1>{task.title}</h1>
+          <h1 className={cn({ "line-through": task.isCompleted })}>
+            {task.title}
+          </h1>
         </div>
         <div className="flex gap-3 items-center">
           <Button variant="link" className="p-0 text-red-500">
             <Trash2></Trash2>
           </Button>
-          <Checkbox />
+          {/* here i am sending string */}
+          <Checkbox checked={task.isCompleted} />
         </div>
       </div>
       <p className="mt-5">{task.description}</p>

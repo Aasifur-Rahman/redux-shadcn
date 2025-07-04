@@ -1,26 +1,42 @@
 import { AddTaskModal } from "@/components/module/tasks/AddTaskModal";
 import TaskCard from "@/components/module/tasks/TaskCard";
-import { selectFilter, selectTasks } from "@/redux/feature/taskSlice/taskSlice";
-import { useAppSelector } from "@/redux/hook";
+
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetTasksQuery } from "@/redux/api/baseApi";
+import type { ITask } from "@/types";
 
 export default function Tasks() {
-  const tasks = useAppSelector(selectTasks);
-  const filter = useAppSelector(selectFilter);
+  const { data, isLoading } = useGetTasksQuery(undefined, {
+    pollingInterval: 30000,
+    refetchOnFocus: true,
+    refetchOnMountOrArgChange: true,
+    refetchOnReconnect: true,
+  });
 
-  console.log(tasks);
-  console.log(filter);
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-5 mt-10">
-      <div className="flex justify-between items-center">
-        <h1>Tasks</h1>
+      <div className="flex justify-end items-center gap-5">
+        <h1 className="mr-auto">Tasks</h1>
+        <Tabs defaultValue="all">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="low">Low</TabsTrigger>
+            <TabsTrigger value="medium">Medium</TabsTrigger>
+            <TabsTrigger value="high">High</TabsTrigger>
+          </TabsList>
+        </Tabs>
         <AddTaskModal />
       </div>
 
       <div className="space-y-5 mt-5">
-        {tasks.map((task) => (
-          <TaskCard task={task} key={task.id} />
-        ))}
+        {!isLoading &&
+          data.tasks.map((task: ITask) => (
+            <TaskCard task={task} key={task.id} />
+          ))}
       </div>
     </div>
   );
